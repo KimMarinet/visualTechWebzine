@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "title": "2024 Web Design Trends",
+        "category": "Design",
+        "image": "",
+        "summary": "Everything you need to know about the upcoming design trends for the new year. Minimalism meets expression.",
+        "author": "Sarah Kim",
+        "date": "2024.01.10"
+    },
+    {
+        "id": 2,
+        "title": "Modern PHP Architecture",
+        "category": "Backend",
+        "image": "https://images.unsplash.com/photo-1599507593499-a3f7d7d97663?q=80&w=1000&auto=format&fit=crop",
+        "summary": "Exploring the evolution of PHP from simple scripts to robust enterprise architecture.",
+        "author": "John Lee",
+        "date": "2024.01.12"
+    },
+    {
+        "id": 3,
+        "title": "Natural Living",
+        "category": "Lifestyle",
+        "image": "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1000&auto=format&fit=crop",
+        "summary": "How to incorporate more nature into your daily workspace for better mental health.",
+        "author": "Emily Park",
+        "date": "2024.01.15"
+    },
+    {
+        "id": 4,
+        "title": "The Future of AI",
+        "category": "Tech",
+        "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1000&auto=format&fit=crop",
+        "summary": "AI is changing the landscape of development. Here is how you can adapt.",
+        "author": "David Chen",
+        "date": "2024.01.18"
+    },
+    {
+        "id": 5,
+        "title": "Minimalist Workspaces",
+        "category": "Inspiration",
+        "image": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop",
+        "summary": "A showcase of the most productive and aesthetic desk setups from around the world.",
+        "author": "Design Daily",
+        "date": "2024.01.20"
+    },
+    {
+        "id": 6,
+        "title": "KMS TEST",
+        "category": "Inspiration",
+        "image": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop",
+        "summary": "A showcase of the most productive and aesthetic desk setups from around the world.",
+        "author": "Design Daily",
+        "date": "2024.01.20"
+    }
+]
