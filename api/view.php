@@ -24,6 +24,7 @@ if ($posts) {
     </title>
     <!-- Adjusted path: go up one level to css/ -->
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/post-list.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -79,8 +80,17 @@ if ($posts) {
             display: inline-block;
             margin-top: 2rem;
             text-decoration: none;
-            color: var(--primary-color);
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
             font-weight: 600;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn-back:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -119,7 +129,7 @@ if ($posts) {
                     </div>
                 </div>
                 <div class="post-image-container">
-                    <img src="<?php echo htmlspecialchars($post['image']); ?>"
+                    <img src="<?php echo htmlspecialchars($post['image'] ? $post['image'] : '../images/default-thumbnail.png'); ?>"
                         alt="<?php echo htmlspecialchars($post['title']); ?>">
                 </div>
                 <div class="post-content">
@@ -135,9 +145,32 @@ if ($posts) {
                 </div>
                 <div class="post-actions">
                     <!-- Adjusted path: go up one level to index.html -->
-                    <a href="../index.html" class="btn-back">← Back to List</a>
+                    <a href="../index.html" class="btn-back">Back to List</a>
                 </div>
             </article>
+            <section class="post-list-container">
+                <div class="table-responsive">
+                    <table class="post-list-table">
+                        <thead>
+                            <tr>
+                                <th width="60%">Title</th>
+                                <th width="20%">Author</th>
+                                <th width="20%">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($posts as $p): ?>
+                                <tr onclick="location.href='view.php?id=<?php echo $p['id']; ?>'"
+                                    class="<?php echo ($p['id'] === $id) ? 'current-post' : ''; ?>">
+                                    <td><?php echo htmlspecialchars($p['title']); ?></td>
+                                    <td><?php echo htmlspecialchars($p['author']); ?></td>
+                                    <td><?php echo htmlspecialchars($p['date']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         <?php else: ?>
             <div class="error-container" style="text-align: center; padding: 4rem 0;">
                 <h2>Post Not Found</h2>

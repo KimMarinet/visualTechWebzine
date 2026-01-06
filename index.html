@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webzine Board</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/view-toggle.css">
     <!-- Google Fonts for Inter (Mantine-like look) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +28,32 @@
     <main class="container">
         <section class="board-section">
             <div class="section-header">
-                <h2>Latest Articles</h2>
-                <p class="section-desc">Discover the most inspiring stories tailored for you.</p>
+                <div class="header-content">
+                    <h2>Latest Articles</h2>
+                    <p class="section-desc">Discover the most inspiring stories tailored for you.</p>
+                </div>
+                <div class="view-toggle">
+                    <button id="btn-grid" class="toggle-btn active" aria-label="Webzine View">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button id="btn-list" class="toggle-btn" aria-label="List View">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div id="post-grid" class="grid-layout">

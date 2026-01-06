@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <a href="api/view.php?id=${post.id}" style="display: block; text-decoration: none; color: inherit;">
                     <div class="card-image-wrapper">
-                        <img src="${post.image}" alt="${post.title}" class="card-image" loading="lazy">
+                        <img src="${post.image || 'images/default-thumbnail.png'}" alt="${post.title}" class="card-image" loading="lazy">
                         <span class="badge" data-category="${post.category}">${post.category}</span>
                     </div>
                 </a>
@@ -47,7 +47,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
+
+            // Share Button Logic
+            const shareBtn = card.querySelector('.icon-btn');
+            shareBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent triggering card click if any
+
+                // 배포 시 URL 주소 바꾸기
+                const shareUrl = new URL(`api/view.php?id=${post.id}`, window.location.href).href;
+
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('주소가 복사되었습니다.\n' + shareUrl);
+                }).catch(err => {
+                    console.error('URL copy failed:', err);
+                    alert('주소 복사에 실패했습니다.');
+                });
+            });
+
             postGrid.appendChild(card);
         });
+    }
+
+    // View Toggle Logic
+    const btnGrid = document.getElementById('btn-grid');
+    const btnList = document.getElementById('btn-list');
+
+    // Load saved preference
+    const savedView = localStorage.getItem('viewMode');
+    if (savedView === 'list') {
+        enableListView();
+    }
+
+    btnGrid.addEventListener('click', () => {
+        postGrid.classList.remove('list-layout');
+        btnGrid.classList.add('active');
+        btnList.classList.remove('active');
+        localStorage.setItem('viewMode', 'grid');
+    });
+
+    btnList.addEventListener('click', enableListView);
+
+    function enableListView() {
+        postGrid.classList.add('list-layout');
+        btnList.classList.add('active');
+        btnGrid.classList.remove('active');
+        localStorage.setItem('viewMode', 'list');
     }
 });
