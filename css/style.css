@@ -169,7 +169,9 @@ button {
 }
 
 .card-image {
+    display: block;
     width: 100%;
+    max-width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s;
@@ -280,6 +282,36 @@ button {
     background: var(--primary-light);
 }
 
+/* Button */
+.btn-back,
+.btn-write {
+    display: inline-block;
+    text-decoration: none;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-back {
+    margin-top: 2rem;
+}
+
+.btn-write {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    margin-right: 1rem;
+}
+
+.btn-back:hover,
+.btn-write:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+
 /* Footer */
 .main-footer {
     margin-top: var(--spacing-xl);
@@ -305,6 +337,38 @@ button {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 3rem;
+    padding-bottom: 2rem;
+}
+
+.page-btn {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    transition: all 0.2s;
+}
+
+.page-btn:hover {
+    background: #f0f0f0;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.page-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
 }
 
 /* Responsive */

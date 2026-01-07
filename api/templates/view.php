@@ -1,16 +1,24 @@
 <?php
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-// Adjusted path: already in api/ so just point to data/posts.json
-$posts = json_decode(file_get_contents(__DIR__ . '/data/posts.json'), true);
-$post = null;
+// Include database connection
+require_once '../db_connect.php';
 
-if ($posts) {
-    foreach ($posts as $p) {
-        if ($p['id'] === $id) {
-            $post = $p;
-            break;
-        }
-    }
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$post = null;
+$posts = [];
+
+try {
+    // Fetch specific post
+    $stmt = $pdo->prepare("SELECT * FROM posts WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    $post = $stmt->fetch();
+
+    // Fetch all posts for the list at bottom
+    $stmt = $pdo->prepare("SELECT * FROM posts");
+    $stmt->execute();
+    $posts = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Error handling can be added here
 }
 ?>
 <!DOCTYPE html>
@@ -23,76 +31,13 @@ if ($posts) {
         <?php echo $post ? htmlspecialchars($post['title']) : 'Post Not Found'; ?> - VisuaLTech
     </title>
     <!-- Adjusted path: go up one level to css/ -->
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/post-list.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/post-list.css">
+    <link rel="stylesheet" href="../../css/board/view/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .post-detail {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem 0;
-        }
-
-        .post-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .post-header h1 {
-            font-size: 2.5rem;
-            margin: 1rem 0;
-            color: var(--text-dark);
-        }
-
-        .meta-info {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        .post-image-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-
-        .post-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--text-dark);
-        }
-
-        .post-content p {
-            margin-bottom: 1.5rem;
-        }
-
-        .summary {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            border-left: 4px solid var(--primary-color);
-            padding-left: 1rem;
-        }
-
-        .btn-back {
-            display: inline-block;
-            margin-top: 2rem;
-            text-decoration: none;
-            background-color: var(--primary);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-
-        .btn-back:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-    </style>
+    <script src="../../js/board/view/view.js"></script>
 </head>
 
 <body>
@@ -128,24 +73,23 @@ if ($posts) {
                         </span>
                     </div>
                 </div>
-                <div class="post-image-container">
-                    <img src="<?php echo htmlspecialchars($post['image'] ? $post['image'] : '../images/default-thumbnail.png'); ?>"
-                        alt="<?php echo htmlspecialchars($post['title']); ?>">
-                </div>
+                <?php if (!empty($post['image_url'])): ?>
+                    <div class="post-image-container">
+                        <img src="../../uploads/<?php echo htmlspecialchars($post['image_url']); ?>"
+                            alt="<?php echo htmlspecialchars($post['title']); ?>">
+                    </div>
+                <?php endif; ?>
                 <div class="post-content">
                     <p class="summary">
                         <?php echo htmlspecialchars($post['summary']); ?>
                     </p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore
-                        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                        aliquip ex ea commodo consequat.</p>
-                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-                        anim id est laborum.</p>
+                    <p>
+                        <?php echo htmlspecialchars($post['content']); ?>
+                    </p>
                 </div>
                 <div class="post-actions">
                     <!-- Adjusted path: go up one level to index.html -->
-                    <a href="../index.html" class="btn-back">Back to List</a>
+                    <a href="../../index.html" class="btn-back">Back to List</a>
                 </div>
             </article>
             <section class="post-list-container">
@@ -160,7 +104,7 @@ if ($posts) {
                         </thead>
                         <tbody>
                             <?php foreach ($posts as $p): ?>
-                                <tr onclick="location.href='view.php?id=<?php echo $p['id']; ?>'"
+                                <tr data-id="<?php echo $p['id']; ?>"
                                     class="<?php echo ($p['id'] === $id) ? 'current-post' : ''; ?>">
                                     <td><?php echo htmlspecialchars($p['title']); ?></td>
                                     <td><?php echo htmlspecialchars($p['author']); ?></td>

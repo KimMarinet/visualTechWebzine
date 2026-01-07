@@ -1,20 +1,75 @@
 document.addEventListener('DOMContentLoaded', () => {
     const postGrid = document.getElementById('post-grid');
     const apiUrl = '/api/posts.php'; // Relative path if served from root
+    const DEFAULT_THUMBNAIL = 'images/default-thumbnail.png';
 
     // Fetch posts
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(posts => {
-            renderPosts(posts);
-        })
-        .catch(error => {
-            console.error('Error fetching posts:', error);
-            postGrid.innerHTML = '<p class="error-message">게시물을 불러오는데 실패했습니다.</p>';
-        });
+    let currentPage = 1;
+    const limit = 6;
+    const paginationContainer = document.createElement('div');
+    paginationContainer.id = 'pagination';
+    paginationContainer.className = 'pagination';
+    postGrid.parentNode.insertBefore(paginationContainer, postGrid.nextSibling);
+
+    function fetchPosts(page = 1) {
+        fetch(`${apiUrl}?page=${page}&limit=${limit}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                renderPosts(data.data);
+                renderPagination(data.meta);
+                currentPage = page;
+                window.scrollTo(0, 0);
+            })
+            .catch(error => {
+                console.error('Error fetching posts:', error);
+                postGrid.innerHTML = '<p class="error-message">게시물을 불러오는데 실패했습니다.</p>';
+            });
+    }
+
+    // Initial fetch
+    fetchPosts();
+
+    function renderPagination(meta) {
+        paginationContainer.innerHTML = '';
+
+        const totalPages = meta.totalPages;
+        const current = meta.page;
+        const pageGroupSize = 10;
+
+        const currentGroup = Math.ceil(current / pageGroupSize);
+        const startPage = (currentGroup - 1) * pageGroupSize + 1;
+        const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+
+        // Prev Button
+        if (startPage > 1) {
+            const prevBtn = createPageBtn('Prev', startPage - 1);
+            paginationContainer.appendChild(prevBtn);
+        }
+
+        // Page Numbers
+        for (let i = startPage; i <= endPage; i++) {
+            const btn = createPageBtn(i, i);
+            if (i === current) btn.classList.add('active');
+            paginationContainer.appendChild(btn);
+        }
+
+        // Next Button
+        if (endPage < totalPages) {
+            const nextBtn = createPageBtn('Next', endPage + 1);
+            paginationContainer.appendChild(nextBtn);
+        }
+    }
+
+    function createPageBtn(label, pageNum) {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        btn.className = 'page-btn';
+        btn.addEventListener('click', () => fetchPosts(pageNum));
+        return btn;
+    }
 
     function renderPosts(posts) {
         postGrid.innerHTML = ''; // Clear loading state
@@ -24,14 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'card';
 
             card.innerHTML = `
-                <a href="api/view.php?id=${post.id}" style="display: block; text-decoration: none; color: inherit;">
+                <a href="api/templates/view.php?id=${post.id}" style="display: block; text-decoration: none; color: inherit;">
                     <div class="card-image-wrapper">
-                        <img src="${post.image || 'images/default-thumbnail.png'}" alt="${post.title}" class="card-image" loading="lazy">
+                        <img src="${post.image_url ? 'uploads/' + post.image_url : DEFAULT_THUMBNAIL}" alt="${post.title}" class="card-image" loading="lazy">
                         <span class="badge" data-category="${post.category}">${post.category}</span>
                     </div>
                 </a>
                 <div class="card-content">
-                    <a href="api/view.php?id=${post.id}" style="text-decoration: none; color: inherit;">
+                    <a href="api/templates/view.php?id=${post.id}" style="text-decoration: none; color: inherit;">
                         <h2 class="card-title">${post.title}</h2>
                     </a>
                     <p class="card-summary">${post.summary}</p>
@@ -55,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation(); // Prevent triggering card click if any
 
                 // 배포 시 URL 주소 바꾸기
-                const shareUrl = new URL(`api/view.php?id=${post.id}`, window.location.href).href;
+                const shareUrl = new URL(`api/templates/view.php?id=${post.id}`, window.location.href).href;
 
                 navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('주소가 복사되었습니다.\n' + shareUrl);
