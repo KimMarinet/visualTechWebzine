@@ -34,16 +34,13 @@
     color: var(--text-dark);
 }
 
-.post-content p {
-    margin-bottom: 1.5rem;
-}
-
 .summary {
     font-size: 1.25rem;
     font-weight: 500;
     color: var(--text-dark);
     border-left: 4px solid var(--primary-color);
     padding-left: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .btn-back {

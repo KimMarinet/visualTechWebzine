@@ -1,5 +1,4 @@
 <?php
-$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 // Include database connection
 require_once '../db_connect.php';
 
@@ -9,12 +8,12 @@ $posts = [];
 
 try {
     // Fetch specific post
-    $stmt = $pdo->prepare("SELECT * FROM posts WHERE id = :id");
+    $stmt = $pdo->prepare("SELECT * FROM board_webzine WHERE seq = :id");
     $stmt->execute(['id' => $id]);
     $post = $stmt->fetch();
 
     // Fetch all posts for the list at bottom
-    $stmt = $pdo->prepare("SELECT * FROM posts");
+    $stmt = $pdo->prepare("SELECT * FROM board_webzine");
     $stmt->execute();
     $posts = $stmt->fetchAll();
 } catch (PDOException $e) {
@@ -46,7 +45,7 @@ try {
             <h1 class="logo">VisuaL<span class="highlight">Tech</span></h1>
             <nav class="main-nav">
                 <!-- Adjusted path: go up one level to index.html -->
-                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../../index.html" class="nav-link">Home</a>
                 <a href="#" class="nav-link">Trending</a>
                 <a href="#" class="nav-link">Categories</a>
             </nav>
@@ -73,25 +72,137 @@ try {
                         </span>
                     </div>
                 </div>
-                <?php if (!empty($post['image_url'])): ?>
-                    <div class="post-image-container">
-                        <img src="../../uploads/<?php echo htmlspecialchars($post['image_url']); ?>"
-                            alt="<?php echo htmlspecialchars($post['title']); ?>">
-                    </div>
-                <?php endif; ?>
+
                 <div class="post-content">
                     <p class="summary">
                         <?php echo htmlspecialchars($post['summary']); ?>
                     </p>
-                    <p>
-                        <?php echo htmlspecialchars($post['content']); ?>
-                    </p>
+                    <div class="content-body">
+                        <?php echo $post['content']; // Allow HTML content ?>
+                    </div>
                 </div>
                 <div class="post-actions">
-                    <!-- Adjusted path: go up one level to index.html -->
-                    <a href="../../index.html" class="btn-back">Back to List</a>
-                </div>
+                    <div class="post-actions">
+                        <a href="../../index.html" class="btn-back">Back to List</a>
+                        <div class="admin-actions" style="margin-left: auto;">
+                            <button id="btn-edit" class="btn-action btn-edit">Edit</button>
+                            <button id="btn-delete" class="btn-action btn-delete">Delete</button>
+                        </div>
+                    </div>
             </article>
+
+            <!-- Admin Auth Modal -->
+            <div id="admin-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <h3>Admin Authentication</h3>
+                    <p>Please enter admin credentials to proceed.</p>
+                    <form id="admin-form">
+                        <div class="form-group">
+                            <input type="text" id="admin-id" placeholder="Admin ID" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="admin-pw" placeholder="Password" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-confirm">Confirm</button>
+                            <button type="button" id="btn-close-modal" class="btn-cancel">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <style>
+                .post-actions {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .btn-action {
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    margin-left: 8px;
+                }
+
+                .btn-edit {
+                    background-color: #f0f0f0;
+                    color: #333;
+                }
+
+                .btn-delete {
+                    background-color: #ff4d4f;
+                    color: white;
+                }
+
+                .btn-delete:hover {
+                    background-color: #ff7875;
+                }
+
+                /* Modal Styles */
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                }
+
+                .modal-content {
+                    background: white;
+                    padding: 24px;
+                    border-radius: 8px;
+                    width: 320px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                }
+
+                .modal-content h3 {
+                    margin-top: 0;
+                    margin-bottom: 12px;
+                }
+
+                .form-group {
+                    margin-bottom: 16px;
+                }
+
+                .form-group input {
+                    width: 100%;
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                }
+
+                .modal-buttons {
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 8px;
+                }
+
+                .btn-confirm {
+                    background-color: #1890ff;
+                    color: white;
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+
+                .btn-cancel {
+                    background-color: #f5f5f5;
+                    color: #666;
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            </style>
             <section class="post-list-container">
                 <div class="table-responsive">
                     <table class="post-list-table">
@@ -104,8 +215,8 @@ try {
                         </thead>
                         <tbody>
                             <?php foreach ($posts as $p): ?>
-                                <tr data-id="<?php echo $p['id']; ?>"
-                                    class="<?php echo ($p['id'] === $id) ? 'current-post' : ''; ?>">
+                                <tr data-id="<?php echo $p['seq']; ?>"
+                                    class="<?php echo ($p['seq'] === $id) ? 'current-post' : ''; ?>">
                                     <td><?php echo htmlspecialchars($p['title']); ?></td>
                                     <td><?php echo htmlspecialchars($p['author']); ?></td>
                                     <td><?php echo htmlspecialchars($p['date']); ?></td>

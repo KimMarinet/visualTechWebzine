@@ -21,16 +21,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $offset = ($page - 1) * $limit;
 
         // Get total count
-        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM posts");
+        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM board_webzine");
         $countStmt->execute();
         $total = $countStmt->fetchColumn();
 
         // Get paginated posts
-        $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY date DESC, id DESC LIMIT :limit OFFSET :offset");
+        $stmt = $pdo->prepare("SELECT * FROM board_webzine ORDER BY date DESC, seq DESC LIMIT :limit OFFSET :offset");
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        $posts = $stmt->fetchAll();
+        $stmt->execute();
+        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Process posts to add image_url if missing, extracting from content
+        foreach ($posts as &$post) {
+            if (empty($post['image_url']) && !empty($post['content'])) {
+                // Extract first image src from content
+                if (preg_match('/<img[^>]+src="([^">]+)"/', $post['content'], $match)) {
+                    $post['image_url'] = $match[1];
+                }
+            }
+        }
+        unset($post); // Break reference
 
         echo json_encode([
             'data' => $posts,

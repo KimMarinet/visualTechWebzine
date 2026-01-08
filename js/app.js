@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'card';
 
             card.innerHTML = `
-                <a href="api/templates/view.php?id=${post.id}" style="display: block; text-decoration: none; color: inherit;">
+                <a href="api/templates/view.php?id=${post.seq}" style="display: block; text-decoration: none; color: inherit;">
                     <div class="card-image-wrapper">
-                        <img src="${post.image_url ? 'uploads/' + post.image_url : DEFAULT_THUMBNAIL}" alt="${post.title}" class="card-image" loading="lazy">
+                        <img src="${post.image_url ? (post.image_url.startsWith('/') ? post.image_url : 'uploads/' + post.image_url) : DEFAULT_THUMBNAIL}" alt="${post.title}" class="card-image" loading="lazy">
                         <span class="badge" data-category="${post.category}">${post.category}</span>
                     </div>
                 </a>
                 <div class="card-content">
-                    <a href="api/templates/view.php?id=${post.id}" style="text-decoration: none; color: inherit;">
+                    <a href="api/templates/view.php?id=${post.seq}" style="text-decoration: none; color: inherit;">
                         <h2 class="card-title">${post.title}</h2>
                     </a>
                     <p class="card-summary">${post.summary}</p>
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation(); // Prevent triggering card click if any
 
                 // 배포 시 URL 주소 바꾸기
-                const shareUrl = new URL(`api/templates/view.php?id=${post.id}`, window.location.href).href;
+                const shareUrl = new URL(`api/templates/view.php?id=${post.seq}`, window.location.href).href;
 
                 navigator.clipboard.writeText(shareUrl).then(() => {
                     alert('주소가 복사되었습니다.\n' + shareUrl);

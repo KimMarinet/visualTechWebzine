@@ -1,9 +1,9 @@
 <?php
-$host = 'localhost';
+$host = 'visualtechnology.cafe24.com';
 $port = 3306;
-$db_name = 'VISUALTECH';
-$username = 'MS';
-$password = '1234';
+$db_name = 'visualtechnology';
+$username = 'visualtechnology';
+$password = 'tech2021!!';
 
 $dsn = "mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4";
 
