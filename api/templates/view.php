@@ -12,8 +12,23 @@ try {
     $stmt->execute(['id' => $id]);
     $post = $stmt->fetch();
 
-    // Fetch all posts for the list at bottom
-    $stmt = $pdo->prepare("SELECT * FROM board_webzine");
+    // Pagination Setup
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    if ($page < 1)
+        $page = 1;
+    $limit = 5;
+    $offset = ($page - 1) * $limit;
+
+    // Get Total Count
+    $countStmt = $pdo->prepare("SELECT count(*) FROM board_webzine");
+    $countStmt->execute();
+    $totalPosts = $countStmt->fetchColumn();
+    $totalPages = ceil($totalPosts / $limit);
+
+    // Fetch posts for the list at bottom with LIMIT
+    $stmt = $pdo->prepare("SELECT * FROM board_webzine ORDER BY seq DESC LIMIT :limit OFFSET :offset");
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     $posts = $stmt->fetchAll();
 } catch (PDOException $e) {
@@ -35,7 +50,9 @@ try {
     <link rel="stylesheet" href="../../css/board/view/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
     <script src="../../js/board/view/view.js"></script>
 </head>
 
@@ -73,22 +90,22 @@ try {
                     </div>
                 </div>
 
+                <div class="admin-actions">
+                    <button id="btn-edit" class="btn-action">Edit</button>
+                    <span style="color: #ced4da; font-size: 0.3rem;">|</span>
+                    <button id="btn-delete" class="btn-action">Delete</button>
+                </div>
+
+                <p class="summary">
+                    <?php echo htmlspecialchars($post['summary']); ?>
+                </p>
+
                 <div class="post-content">
-                    <p class="summary">
-                        <?php echo htmlspecialchars($post['summary']); ?>
-                    </p>
                     <div class="content-body">
                         <?php echo $post['content']; // Allow HTML content ?>
                     </div>
+                    <a href="../../index.html" class="btn-back">Back to List</a>
                 </div>
-                <div class="post-actions">
-                    <div class="post-actions">
-                        <a href="../../index.html" class="btn-back">Back to List</a>
-                        <div class="admin-actions" style="margin-left: auto;">
-                            <button id="btn-edit" class="btn-action btn-edit">Edit</button>
-                            <button id="btn-delete" class="btn-action btn-delete">Delete</button>
-                        </div>
-                    </div>
             </article>
 
             <!-- Admin Auth Modal -->
@@ -110,99 +127,6 @@ try {
                     </form>
                 </div>
             </div>
-
-            <style>
-                .post-actions {
-                    display: flex;
-                    align-items: center;
-                }
-
-                .btn-action {
-                    padding: 8px 16px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    margin-left: 8px;
-                }
-
-                .btn-edit {
-                    background-color: #f0f0f0;
-                    color: #333;
-                }
-
-                .btn-delete {
-                    background-color: #ff4d4f;
-                    color: white;
-                }
-
-                .btn-delete:hover {
-                    background-color: #ff7875;
-                }
-
-                /* Modal Styles */
-                .modal-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 1000;
-                }
-
-                .modal-content {
-                    background: white;
-                    padding: 24px;
-                    border-radius: 8px;
-                    width: 320px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                }
-
-                .modal-content h3 {
-                    margin-top: 0;
-                    margin-bottom: 12px;
-                }
-
-                .form-group {
-                    margin-bottom: 16px;
-                }
-
-                .form-group input {
-                    width: 100%;
-                    padding: 8px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    box-sizing: border-box;
-                }
-
-                .modal-buttons {
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 8px;
-                }
-
-                .btn-confirm {
-                    background-color: #1890ff;
-                    color: white;
-                    padding: 8px 16px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-
-                .btn-cancel {
-                    background-color: #f5f5f5;
-                    color: #666;
-                    padding: 8px 16px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-            </style>
             <section class="post-list-container">
                 <div class="table-responsive">
                     <table class="post-list-table">
@@ -216,7 +140,8 @@ try {
                         <tbody>
                             <?php foreach ($posts as $p): ?>
                                 <tr data-id="<?php echo $p['seq']; ?>"
-                                    class="<?php echo ($p['seq'] === $id) ? 'current-post' : ''; ?>">
+                                    onclick="if(!event.target.closest('a')) location.href='?id=<?php echo $p['seq']; ?>&page=<?php echo $page; ?>';"
+                                    style="cursor: pointer;" class="<?php echo ($p['seq'] === $id) ? 'current-post' : ''; ?>">
                                     <td><?php echo htmlspecialchars($p['title']); ?></td>
                                     <td><?php echo htmlspecialchars($p['author']); ?></td>
                                     <td><?php echo htmlspecialchars($p['date']); ?></td>
@@ -224,7 +149,105 @@ try {
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+
+                    <!-- Pagination -->
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination">
+                            <?php
+                            $currentBlock = ceil($page / 10);
+                            $startPage = ($currentBlock - 1) * 10 + 1;
+                            $endPage = min($startPage + 9, $totalPages);
+                            ?>
+
+                            <!-- Jump -5 Pages (<<) -->
+                            <?php if ($page > 5): ?>
+                                <a href="?id=<?php echo $id; ?>&page=<?php echo max(1, $page - 5); ?>" class="page-link">&laquo;</a>
+                            <?php endif; ?>
+
+                            <!-- Prev Page (<) -->
+                            <?php if ($page > 1): ?>
+                                <a href="?id=<?php echo $id; ?>&page=<?php echo $page - 1; ?>" class="page-link">&lt;</a>
+                            <?php endif; ?>
+
+                            <!-- Page Numbers -->
+                            <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                                <a href="?id=<?php echo $id; ?>&page=<?php echo $i; ?>"
+                                    class="page-link <?php echo ($i == $page) ? 'active' : ''; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <!-- Next Page (>) -->
+                            <?php if ($page < $totalPages): ?>
+                                <a href="?id=<?php echo $id; ?>&page=<?php echo $page + 1; ?>" class="page-link">&gt;</a>
+                            <?php endif; ?>
+
+                            <!-- Jump +5 Pages (>>) -->
+                            <?php if ($page + 5 <= $totalPages): ?>
+                                <a href="?id=<?php echo $id; ?>&page=<?php echo min($totalPages, $page + 5); ?>"
+                                    class="page-link">&raquo;</a>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
+                <style>
+                    /* Pagination Styles */
+                    /* Pagination Styles - Compact (0.5x) */
+                    .pagination {
+                        display: flex;
+                        justify-content: center;
+                        margin-top: 10px;
+                        /* Reduced from 20px */
+                        gap: 3px;
+                        /* Reduced from 5px */
+                    }
+
+                    .page-link {
+                        padding: 3px 6px;
+                        /* Reduced from 6px 12px */
+                        border: 1px solid #ddd;
+                        color: #333;
+                        text-decoration: none;
+                        border-radius: 4px;
+                        font-size: 0.75rem;
+                        /* Reduced from 0.9rem */
+                    }
+
+                    .page-link:hover {
+                        background-color: #f5f5f5;
+                    }
+
+                    .page-link.active {
+                        background-color: var(--primary-color, #1a73e8);
+                        color: white;
+                        border-color: var(--primary-color, #1a73e8);
+                    }
+
+                    /* Compact Table Styles */
+                    .post-list-table th,
+                    .post-list-table td {
+                        padding: 6px 8px !important;
+                        /* Force reduced padding */
+                        font-size: 0.85rem !important;
+                        /* Smaller text */
+                        line-height: 1.2;
+                    }
+
+                    .post-list-container {
+                        transform-origin: top center;
+                    }
+
+                    /* Ensure table row hover effect works for clickability hint */
+                    .post-list-table tbody tr:hover {
+                        background-color: #f9f9f9;
+                    }
+
+                    .current-post {
+                        background-color: #e3f2fd;
+                        font-weight: 600;
+                    }
+                </style>
             </section>
         <?php else: ?>
             <div class="error-container" style="text-align: center; padding: 4rem 0;">

@@ -1,4 +1,5 @@
 /* Post Detail Styles */
+
 .post-detail {
     max-width: 800px;
     margin: 0 auto;
@@ -7,7 +8,7 @@
 
 .post-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .post-header h1 {
@@ -32,15 +33,15 @@
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--text-dark);
+    text-align: center;
 }
 
 .summary {
     font-size: 1.25rem;
     font-weight: 500;
-    color: var(--text-dark);
-    border-left: 4px solid var(--primary-color);
-    padding-left: 1rem;
+    color: #6c757d;
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 .btn-back {
@@ -58,4 +59,199 @@
 .btn-back:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
+}
+
+/* Moved from view.php */
+/* Magazine Style Overrides */
+body {
+    background-color: #fff;
+    color: #212529;
+}
+
+.post-detail {
+    max-width: 740px;
+    /* Slightly narrower for better reading experience */
+    padding: 4rem 0;
+}
+
+.post-header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.post-header .badge {
+    background: transparent;
+    color: #d6336c;
+    /* Editorial pink/red accent */
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0;
+    margin-bottom: 1rem;
+    display: inline-block;
+    font-weight: 700;
+    box-shadow: none;
+}
+
+.post-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0.5rem 0 1.5rem;
+    color: #111;
+    letter-spacing: -0.5px;
+}
+
+.meta-info {
+    font-family: 'Inter', sans-serif;
+    color: #868e96;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.summary {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    color: #495057;
+    text-align: center;
+    font-style: italic;
+    margin: 0 auto 3rem;
+    max-width: 90%;
+    border: none;
+    /* Ensure no border */
+    padding: 0;
+}
+
+.admin-actions {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.btn-action {
+    padding: 0 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: #ced4da;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.btn-action:hover {
+    color: #495057;
+}
+
+.post-content {
+    font-family: 'Lora', serif;
+    /* Serif for body text is very magazine-like */
+    font-size: 1rem;
+    color: #212529;
+}
+
+.content-body img {
+    display: block;
+    margin: 3rem auto;
+    max-width: 100%;
+    border-radius: 4px;
+    /* Subtle radius */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    /* Soft shadow */
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 5rem;
+    padding: 1rem 3rem;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    color: #212529;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: 1px solid #dee2e6;
+    border-radius: 2px;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    border-color: #212529;
+    background-color: #212529;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+
+.btn-confirm {
+    background-color: #1890ff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #f5f5f5;
+    color: #666;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }

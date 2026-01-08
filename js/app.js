@@ -43,9 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const startPage = (currentGroup - 1) * pageGroupSize + 1;
         const endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-        // Prev Button
-        if (startPage > 1) {
-            const prevBtn = createPageBtn('Prev', startPage - 1);
+        // First / Prev Group (Is on page 11 or more?)
+        if (current > 1) { // Logic check: Usually prev group is shown if startPage > 1
+            if (startPage > 1) {
+                const prevGroupBtn = createPageBtn('«', startPage - 1); // Go to last page of prev group
+                paginationContainer.appendChild(prevGroupBtn);
+            }
+
+            // Prev Page
+            const prevBtn = createPageBtn('<', current - 1);
             paginationContainer.appendChild(prevBtn);
         }
 
@@ -56,10 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
             paginationContainer.appendChild(btn);
         }
 
-        // Next Button
-        if (endPage < totalPages) {
-            const nextBtn = createPageBtn('Next', endPage + 1);
+        // Next / Next Group
+        if (current < totalPages) {
+            // Next Page
+            const nextBtn = createPageBtn('>', current + 1);
             paginationContainer.appendChild(nextBtn);
+
+            // Next Group
+            if (endPage < totalPages) {
+                const nextGroupBtn = createPageBtn('»', endPage + 1); // Go to first page of next group
+                paginationContainer.appendChild(nextGroupBtn);
+            }
         }
     }
 

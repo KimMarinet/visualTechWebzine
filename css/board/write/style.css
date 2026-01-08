@@ -187,3 +187,129 @@
     box-shadow: none;
     transform: none;
 }
+/* Moved from write.php */
+/* Warm Editorial Style Overrides */
+main.container {
+    background-color: #fcfbf9; /* Warm paper-like off-white */
+    padding-bottom: 4rem; /* Extend background */
+}
+
+.write-container {
+    max-width: 800px;
+    margin: 4rem auto;
+    background: #fff;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+    color: #2c2c2c; /* Moved from body */
+    font-family: 'Lora', serif; /* Moved from body */
+    border-radius: 2px;
+    position: relative;
+    /* For back button positioning */
+}
+
+.write-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.btn-back-arrow {
+    position: absolute;
+    left: 0;
+    color: #333;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.btn-back-arrow:hover {
+    color: #d6336c;
+    /* Editorial Accent */
+}
+
+h2 {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0;
+    /* Margin handled by container */
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #999;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-input,
+select.form-input {
+    width: 100%;
+    padding: 0.8rem 0;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    /* Changed to Inter for neatness */
+    font-size: 0.8rem;
+    color: #333;
+    transition: border-color 0.3s ease;
+    border-radius: 0;
+    /* Remove default radius */
+}
+
+.form-input:focus {
+    outline: none;
+    border-bottom-color: #d6336c;
+    /* Editorial Accent Color */
+}
+
+.form-input::placeholder {
+    /* All styles removed to keep it clean */
+}
+
+/* Specific input styling */
+#title {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Submit Button */
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-top: 2rem;
+    background-color: #2c2c2c;
+    color: #fff;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #000;
+}
+
+/* Editor Overrides for consistency */
+.toastui-editor-defaultUI {
+    border: 1px solid #f0f0f0 !important;
+}
+
